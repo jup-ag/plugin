@@ -118,13 +118,13 @@ export default function App() {
         openGraph={{
           type: 'website',
           locale: 'en',
-          title: 'Jupiter Plugin',
-          description: 'Jupiter Plugin: An open-sourced, lite version of Jupiter that provides end-to-end swap flow.',
+          title: 'Plugin: add Jupiter Swap to your website or app',
+          description: 'Bring the perfect swap to any web app. Jupiter Plugin is the easiest way to add full Ultra swap functionality to any website.',
           url: 'https://plugin.jup.ag/',
           site_name: 'Jupiter Plugin',
           images: [
             {
-              url: `https://static.jup.ag/static/jupiter-meta-main.jpg`,
+              url: `https://plugin.jup.ag/meta-og/jupiter-meta-plugin.webp`,
               alt: 'Jupiter Aggregator',
             },
           ],

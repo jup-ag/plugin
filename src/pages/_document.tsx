@@ -11,7 +11,7 @@ class MyDocument extends Document {
 
           <meta
             name="description"
-            content="Jupiter Plugin: An open-sourced, lite version of Jupiter that provides end-to-end swap flow."
+            content="Bring the perfect swap to any web app. Jupiter Plugin is the easiest way to add full Ultra swap functionality to any website."
           />
 
           <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
