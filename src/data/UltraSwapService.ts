@@ -131,7 +131,11 @@ class UltraSwapService implements UltraSwapService {
         ),
     );
 
-    const response = await fetch(`${this.ROUTE.ORDER}?${queryParams.toString()}`, { signal });
+    const response = await fetch(`${this.ROUTE.ORDER}?${queryParams.toString()}`, { signal,
+      headers: {
+        'x-client-platform': 'jupiter.plugin'
+      }
+     });
     if (!response.ok) {
       throw response;
     }
