@@ -38,6 +38,10 @@ const RoutePlanStep = type({
 });
 const RoutePlanWithMetadata = array(RoutePlanStep);
 
+const PlatformFee = type({
+  feeBps:number(),
+});
+
 export const FormattedUltraQuoteResponse = type({
   inputMint: PublicKeyFromString,
   inAmount: AmountFromString,
@@ -54,9 +58,15 @@ export const FormattedUltraQuoteResponse = type({
   gasless: boolean(),
   requestId: string(),
   prioritizationFeeLamports: optional(number()),
+  prioritizationFeePayer: nullable(PublicKeyFromString),
+  rentFeeLamports: optional(number()),
+  rentFeePayer: nullable(PublicKeyFromString),
+  signatureFeeLamports: optional(number()),
+  signatureFeePayer: nullable(PublicKeyFromString),
   feeBps: number(),
   router: string(),
   errorMessage: optional(string()),
+  platformFee: PlatformFee,
 });
 
 export type FormattedUltraQuoteResponse = Infer<typeof FormattedUltraQuoteResponse>;

@@ -37,22 +37,21 @@ const Index = ({
     if (!quoteResponse) {
       return 0;
     }
-    return quoteResponse.quoteResponse.feeBps / 100;
+    return quoteResponse.quoteResponse.platformFee.feeBps / 100;
   }, [quoteResponse]);
 
-  const router = useMemo(() => {
-    if (!quoteResponse) {
-      return;
-    }
-    return quoteResponse.quoteResponse.router;
-  }, [quoteResponse]);
 
   const gasFee = useMemo(() => {
     if (quoteResponse) {
-      const { prioritizationFeeLamports } = quoteResponse.quoteResponse;
+      const { prioritizationFeeLamports, signatureFeeLamports } = quoteResponse.quoteResponse;
+      let totalFeeLamports = 0;
       if (prioritizationFeeLamports) {
-        return prioritizationFeeLamports / 1e9; // Convert lamports to SOL
+        totalFeeLamports += prioritizationFeeLamports;
       }
+      if (signatureFeeLamports) {
+        totalFeeLamports += signatureFeeLamports;
+      }
+      return totalFeeLamports / 1e9; // Convert lamports to SOL
     }
     return 0;
   }, [quoteResponse]);
@@ -86,7 +85,7 @@ const Index = ({
 
       <div className="flex items-center justify-between text-xs">
         <div className="text-primary-text/50">
-          <span>Fee</span>
+          <span>Platform Fee</span>
         </div>
         <div className="text-primary-text">{fee}%</div>
       </div>
