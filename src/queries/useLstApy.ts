@@ -1,14 +1,11 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
-export interface LstApy {
-  apys: Record<string, number>;
-}
-
+export type LstApy =Record<string, number>;
 export function useLstApyFetcher() {
   return useQuery({
     queryKey: ['lst-apy'],
     queryFn: async () => {
-      const lstApy = await fetch(`https://worker.jup.ag/lst-apys`);
+      const lstApy = await fetch(`https://worker.jup.ag/lst-apys-v2`);
       const apyResult: LstApy = await lstApy.json();
 
       return apyResult;

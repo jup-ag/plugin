@@ -40,7 +40,7 @@ const LSTTag: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
   const apy = useMemo(() => {
     if (!lstApy) return;
 
-    const value = lstApy.apys[mintAddress];
+    const value = lstApy[mintAddress];
     if (value && hasNumericValue(value)) {
       return new Decimal(value).mul(100).toDP(2).toString();
     }
