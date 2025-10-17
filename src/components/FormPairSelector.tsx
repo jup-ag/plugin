@@ -1,4 +1,4 @@
-import React, { createRef, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList, ListChildComponentProps, areEqual } from 'react-window';
 import LeftArrowIcon from 'src/icons/LeftArrowIcon';

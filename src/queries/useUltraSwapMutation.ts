@@ -1,4 +1,3 @@
-import { WalletSignTransactionError } from '@jup-ag/wallet-adapter';
 import { useMutation } from '@tanstack/react-query';
 import { ISwapContext, QuoteResponse } from 'src/contexts/SwapContext';
 import { ultraSwapService } from 'src/data/UltraSwapService';
@@ -100,8 +99,10 @@ export function useUltraSwapMutation() {
     },
     onError: async (error, variables) => {
       const { setTxStatus, setLastSwapResult, quoteResponseMeta } = variables;
-      if (error instanceof WalletSignTransactionError) {
-        const message = error.message || error.error || 'Transaction cancelled';
+      const {name} = error as any;
+
+      if (name === 'WalletSignTransactionError') {
+        const message = 'Transaction cancelled';
         setLastSwapResult({
           swapResult: {
             error: new TransactionError(message),
@@ -121,7 +122,7 @@ export function useUltraSwapMutation() {
         return;
       }
 
-      if ('json' in (error as any)) {
+      if (typeof error === 'object' && error !== null && 'json' in error) {
         const json = (await (error as any).json()) as {
           txid: string;
           signature: string;
@@ -140,7 +141,14 @@ export function useUltraSwapMutation() {
           txid: json.txid || '',
           status: 'fail',
         });
+        return;
       }
+      setLastSwapResult({
+        swapResult: {
+          error: new TransactionError( 'Unknown error'),
+        },
+        quoteReponse: quoteResponseMeta,
+      });
     },
   });
 }

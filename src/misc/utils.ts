@@ -66,42 +66,6 @@ export function toLamports(lamportsAmount: JSBI | BN | number, decimals: number)
     .toNumber();
 }
 
-// https://usehooks.com/useEventListener/
-export function useReactiveEventListener(
-  eventName: string,
-  handler: (event: any) => void,
-  element = typeof window !== 'undefined' ? window : null,
-) {
-  // Create a ref that stores handler
-  const savedHandler = useRef<React.Ref<any>>();
-  // Update ref.current value if handler changes.
-  // This allows our effect below to always get latest handler ...
-  // ... without us needing to pass it in effect deps array ...
-  // ... and potentially cause effect to re-run every render.
-  useEffect(() => {
-    savedHandler.current = handler;
-  }, [handler]);
-  useEffect(
-    () => {
-      if (typeof window !== 'undefined') {
-        // Make sure element supports addEventListener
-        // On
-        const isSupported = element && element.addEventListener;
-        if (!isSupported) return;
-        // Create event listener that calls handler function stored in ref
-        const eventListener = (event: any) => typeof savedHandler.current === 'function' && savedHandler.current(event);
-        // Add event listener
-        element.addEventListener(eventName, eventListener);
-        // Remove event listener on cleanup
-        return () => {
-          element.removeEventListener(eventName, eventListener);
-        };
-      }
-    },
-    [eventName, element], // Re-run if eventName or element changes
-  );
-}
-
 export const isMobile = () => typeof window !== 'undefined' && screen && screen.width <= 480;
 
 export const detectedSeparator = formatNumber.format('1.1').substring(1, 2);
@@ -140,11 +104,6 @@ export function useOutsideClick(ref: RefObject<HTMLElement>, handler: (e: MouseE
   }, [ref, handler]);
 }
 
-export function splitIntoChunks<T>(array: T[], size: number): T[][] {
-  return Array.apply<number, T[], T[][]>(0, new Array(Math.ceil(array.length / size))).map((_, index) =>
-    array.slice(index * size, (index + 1) * size),
-  );
-}
 
 export const hasNumericValue = (amount: string | number) => {
   if (amount && !Number.isNaN(Number(amount))) {

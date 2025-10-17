@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
+import React, { CSSProperties, useMemo } from 'react';
 import Decimal from 'decimal.js';
 import { WRAPPED_SOL_MINT } from 'src/constants';
 import { checkIsStrictOrVerified, checkIsToken2022 } from 'src/misc/tokenTags';
@@ -26,13 +26,6 @@ export interface IPairRow {
   isLST?: boolean;
 }
 
-interface IMultiTag {
-  isVerified: boolean;
-  isLST: boolean;
-  // isUnknown: boolean;
-  isToken2022: boolean;
-  isFrozen: boolean;
-}
 
 const LSTTag: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
   const { data: lstApy } = useLstApyFetcher();
@@ -46,6 +39,7 @@ const LSTTag: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
     }
     return;
   }, [lstApy, mintAddress]);
+  if (!apy) return null;
 
   return (
     <p className="rounded-md text-xxs leading-none transition-all py-0.5 px-1 text-primary/50 border border-primary/50 font-semibold">
@@ -56,44 +50,12 @@ const LSTTag: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
 
 const MultiTags: React.FC<IPairRow> = ({ item }) => {
   const { data: balances } = useBalances();
-  const isLoading = useRef<boolean>(false);
-  const isLoaded = useRef<boolean>(false);
-  // It's cheaper to slightly delay and rendering once, than rendering everything all the time
-  const [renderedTag, setRenderedTag] = React.useState<IMultiTag>({
-    isVerified: false,
-    isLST: false,
-    // isUnknown: false,
-    isToken2022: false,
-    isFrozen: false,
-  });
 
-  useEffect(() => {
-    if (isLoaded.current || isLoading.current) return;
-
-    isLoading.current = true;
-    setTimeout(() => {
-      const result = {
-        isVerified: checkIsStrictOrVerified(item),
-        isLST: Boolean(item.tags?.includes('lst')),
-        // isUnknown: checkIsUnknownToken(item),
-        isToken2022: Boolean(checkIsToken2022(item)),
-        isFrozen: balances?.[item.id]?.isFrozen || false,
-      };
-      setRenderedTag(result);
-      isLoading.current = false;
-      isLoaded.current = true;
-    }, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const remainingTags: string[] = []; // we use to show 'pump'
-
-  if (!renderedTag) return null;
-
-  const { isToken2022, isFrozen, isLST } = renderedTag;
-
+  const isFrozen = balances?.[item.id]?.isFrozen || false;
+  const isToken2022 = checkIsToken2022(item);
+  const isLST = item.tags?.includes('lst');
   return (
-    <div className="flex justify-end gap-x-1">
+    <div className="flex justify-end gap-x-1" key={item.id}>
       {isFrozen && (
         <p className="border rounded-md text-xxs leading-none transition-all py-0.5 px-1 border-warning/50 text-warning/50">
           Frozen
@@ -105,29 +67,15 @@ const MultiTags: React.FC<IPairRow> = ({ item }) => {
           Token2022
         </p>
       )}
-      {remainingTags?.map((tag, idx) => (
-        <div
-          key={idx}
-          className="rounded-md text-xxs leading-none transition-all py-0.5 px-1 bg-black/10 font-semibold text-primary-text/20"
-        >
-          {tag}
-        </div>
-      ))}
 
       {isLST && <LSTTag mintAddress={item.id} />}
     </div>
   );
 };
 
+
 const FormPairRow = (props: IPairRow) => {
-  const {
-    item,
-    style,
-    onSubmit,
-    suppressCloseModal,
-    showExplorer = true,
-    enableUnknownTokenWarning = true,
-  } = props;
+  const { item, style, onSubmit, suppressCloseModal, showExplorer = true, enableUnknownTokenWarning = true } = props;
   const queryClient = useQueryClient();
   const onClick = React.useCallback(() => {
     // Optimistically update for useAsset hook
@@ -185,7 +133,7 @@ const FormPairRow = (props: IPairRow) => {
         <div className="text-xs text-primary-text/50 text-right h-full flex flex-col justify-evenly">
           <CoinBalance mintAddress={item.id} hideZeroBalance />
           {usdValueDisplay ? <p>{usdValueDisplay}</p> : null}
-          <MultiTags {...props} />
+          <MultiTags {...props} key={item.id} />
         </div>
       </div>
     </li>
