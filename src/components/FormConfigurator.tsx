@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  useFormContext,
-  useWatch,
-} from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import ChevronDownIcon from 'src/icons/ChevronDownIcon';
 import Toggle from './Toggle';
 import Tooltip from './Tooltip';
@@ -16,6 +13,7 @@ import { SwapMode } from 'src/types/constants';
 import Link from 'next/link';
 import { BrandingConfigurator } from './BrandingConfigurator';
 import InfoIcon from 'src/icons/InfoIcon';
+import { useAMM } from 'src/queries/useAMM';
 
 const templateOptions: { name: string; description: string; values: IFormConfigurator }[] = [
   {
@@ -73,7 +71,7 @@ function applyCustomColors(colors: {
 }
 
 const FormConfigurator = () => {
-  const { control , reset, setValue, formState} = useFormContext<IFormConfigurator>();
+  const { control, reset, setValue, formState } = useFormContext<IFormConfigurator>();
   const currentTemplate = useRef('');
   const { query, replace } = useRouter();
 
@@ -151,7 +149,8 @@ const FormConfigurator = () => {
   const [active, setActive] = React.useState(0);
   const [isExplorerDropdownOpen, setIsExplorerDropdownOpen] = React.useState(false);
   const [isSwapModeOpen, setIsSwapModeOpen] = React.useState(false);
-
+  const [isExcludeDexesOpen, setIsExcludeDexesOpen] = React.useState(false);
+  const { data: ammData } = useAMM();
   const isValidReferralAccount = useMemo(() => {
     if (!formProps.referralAccount) return false;
     return isValidSolanaAddress(formProps.referralAccount);
@@ -161,8 +160,7 @@ const FormConfigurator = () => {
     if (!formProps.initialInputMint) return false;
     return isValidSolanaAddress(formProps.initialInputMint);
   }, [formProps.initialInputMint]);
-  
-  
+
   const isValidOutputMint = useMemo(() => {
     if (!formProps.initialOutputMint) return false;
     return isValidSolanaAddress(formProps.initialOutputMint);
@@ -240,7 +238,6 @@ const FormConfigurator = () => {
         <div>
           <p className="text-sm text-white/75">Initial input mint</p>
         </div>
-      
       </div>
       <input
         className="mt-2 text-white w-full flex justify-between items-center space-x-2 text-left rounded-md bg-white/10 px-4 py-2 text-sm font-medium shadow-sm border border-white/10"
@@ -250,14 +247,11 @@ const FormConfigurator = () => {
           setValue('formProps.initialInputMint', e.target.value);
         }}
       />
-  {!isValidInputMint && (
-          <p className="text-xs text-utility-warning-300 mt-2">Invalid input mint</p>
-        )}
+      {!isValidInputMint && <p className="text-xs text-utility-warning-300 mt-2">Invalid input mint</p>}
       <div className="flex justify-between mt-5">
         <div>
           <p className="text-sm text-white/75">Initial output mint</p>
         </div>
-
       </div>
       <input
         className="mt-2 text-white w-full flex justify-between items-center space-x-2 text-left rounded-md bg-white/10 px-4 py-2 text-sm font-medium shadow-sm border border-white/10"
@@ -267,9 +261,7 @@ const FormConfigurator = () => {
           setValue('formProps.initialOutputMint', e.target.value);
         }}
       />
-        {!isValidOutputMint && (
-          <p className="text-xs text-utility-warning-300 mt-2">Invalid output mint</p>
-        )}
+      {!isValidOutputMint && <p className="text-xs text-utility-warning-300 mt-2">Invalid output mint</p>}
       <div className="flex justify-between mt-5">
         <div>
           <p className="text-sm text-white/75">Fixed Mint</p>
@@ -377,6 +369,94 @@ const FormConfigurator = () => {
           }
         }}
       />
+      {/* Exclude DEXes */}
+      <div>
+        <div className="relative inline-block text-left text-white w-full mt-5">
+          <div className="flex items-center justify-start mb-2 gap-x-3">
+            <p className="text-sm text-white/75">AMM Sources</p>
+            {ammData && (
+              <span className="text-xs text-white/50">
+                {ammData.length - (formProps.excludeDexes?.length || 0)}/{ammData.length} included
+              </span>
+            )}
+          </div>
+          <div>
+            <button
+              onClick={() => setIsExcludeDexesOpen((prev) => !prev)}
+              type="button"
+              className=" w-full flex justify-between items-center space-x-2 text-left rounded-md bg-white/10 px-4 py-2 text-sm font-medium shadow-sm border border-white/10"
+              id="menu-button"
+              aria-expanded="true"
+              aria-haspopup="true"
+            >
+              <div className="flex items-center justify-center space-x-2.5  h-5 flex-1 min-w-0">
+                <p className="truncate">
+                  {formProps.excludeDexes?.length ? formProps.excludeDexes.join(', ') : 'None excluded'}
+                </p>
+              </div>
+
+              <ChevronDownIcon />
+            </button>
+
+            {isExcludeDexesOpen ? (
+              <div
+                id="exclude-dex-menu"
+                className="absolute left-0 top-15 z-10 ml-1 mt-1 origin-top-right rounded-md shadow-xl bg-zinc-700 w-full border border-white/20 max-h-64 overflow-y-auto webkit-scrollbar"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="menu-button"
+              >
+                {ammData?.map((item, index) => {
+                  const isExcluded = formProps.excludeDexes?.includes(item.label) || false;
+                  return (
+                    <div
+                      key={index}
+                      className={cn(
+                        'flex items-center justify-between w-full px-4 py-2 text-sm hover:bg-interactive/60',
+                        index !== ammData.length - 1 ? 'border-b border-white/10' : '',
+                      )}
+                    >
+                      <label className="flex items-center cursor-pointer flex-1">
+                        <input
+                          type="checkbox"
+                          checked={!isExcluded}
+                          onChange={(e) => {
+                            const currentExcludeDexes = formProps.excludeDexes || [];
+                            if (!e.target.checked) {
+                              // Unticked - add to exclude list
+                              setValue('formProps.excludeDexes', [...currentExcludeDexes, item.label]);
+                            } else {
+                              // Ticked - remove from exclude list
+                              setValue(
+                                'formProps.excludeDexes',
+                                currentExcludeDexes.filter((dex) => dex !== item.label),
+                              );
+                            }
+                          }}
+                          className="mr-3 h-4 w-4 rounded border-white/20 text-white accent-primary cursor-pointer"
+                        />
+                        <span>{item.label}</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const allOtherDexes =
+                            ammData?.filter((dex) => dex.label !== item.label).map((dex) => dex.label) || [];
+                          setValue('formProps.excludeDexes', allOtherDexes);
+                        }}
+                        className="ml-2 px-2 py-0.5 text-xs rounded bg-white/10 hover:bg-white/20 border border-white/20 text-white/70 hover:text-white transition-colors"
+                      >
+                        Only
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
       <div className="w-full border-b border-white/10 py-3" />
 
       {/* Referral  */}

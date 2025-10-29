@@ -47,6 +47,8 @@ export interface UltraSwapQuoteParams {
   swapMode?: 'ExactIn' | 'ExactOut';
   referralAccount?: string;
   referralFee?: number;
+  excludeDexes?: string[];
+  excludeRouters?: string[];
 }
 interface UltraSwapResponseBase {
   signature: string;
@@ -130,6 +132,7 @@ class UltraSwapService implements UltraSwapService {
           {},
         ),
     );
+    console.log(queryParams.toString());
 
     const response = await fetch(`${this.ROUTE.ORDER}?${queryParams.toString()}`, { signal,
       headers: {

@@ -40,6 +40,9 @@ export interface FormProps {
   /** Referral fee to use for the swap */
   referralFee?: number;
 
+  /** Exclude DEXes */
+  excludeDexes?: string[];
+
 }
 
 /** Built in support for these explorers */

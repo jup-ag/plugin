@@ -3,15 +3,24 @@ import { UltraSwapQuoteParams, ultraSwapService } from 'src/data/UltraSwapServic
 import { FormattedUltraQuoteResponse } from 'src/entity/FormattedUltraQuoteResponse';
 import { create } from 'superstruct';
 
-export const useQuoteQuery = (params: UltraSwapQuoteParams, shouldRefetch: boolean = true) => {
-  const { amount } = params;
+export const useQuoteQuery = (initialParams: UltraSwapQuoteParams, shouldRefetch: boolean = true) => {
+  const { amount } = initialParams;
   return useQuery({
-    queryKey: ['quote', params],
+    queryKey: ['quote', initialParams],
     queryFn: async ({ signal }) => {
       if (Number(amount) === 0) {
         return null;
       }
       try {
+        let params =initialParams;
+        if (params.excludeDexes && params.excludeDexes.length > 0) {
+          params ={
+            ...initialParams,
+            excludeRouters:[
+              'okx','dflow','hashflow','jupiterz'
+            ]
+          }
+        }
         const response = await ultraSwapService.getQuote(params, signal);
         const quoteResponse = create(response, FormattedUltraQuoteResponse, 'conver FormattedUltraQuoteResponse Error');
         return {

@@ -213,6 +213,7 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
       swapMode: isToPairFocused.current ? 'ExactOut' : 'ExactIn',
       referralAccount: formProps.referralAccount,
       referralFee: formProps.referralFee,
+      excludeDexes: formProps.excludeDexes,
     },
     // Stop refetching when transaction is in progress
     !txStatus,
