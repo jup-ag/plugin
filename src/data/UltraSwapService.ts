@@ -132,7 +132,6 @@ class UltraSwapService implements UltraSwapService {
           {},
         ),
     );
-    console.log(queryParams.toString());
 
     const response = await fetch(`${this.ROUTE.ORDER}?${queryParams.toString()}`, { signal,
       headers: {
