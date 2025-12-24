@@ -28,8 +28,6 @@ const SwapInfo = type({
   outputMint: string(),
   inAmount: AmountFromString,
   outAmount: AmountFromString,
-  feeAmount: AmountFromString,
-  feeMint: PublicKeyFromString,
 });
 
 const RoutePlanStep = type({
