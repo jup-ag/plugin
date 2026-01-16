@@ -23,8 +23,6 @@ export interface UltraQuoteResponse {
             outAmount: string;
             ammKey: string;
             label: string;
-            feeAmount: JSBI;
-            feeMint: string;
         };
         percent: number;
     }[];
