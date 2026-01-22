@@ -1,5 +1,3 @@
-import JSBI from "jsbi";
-
 export const AGGREGATOR_SOURCES = {
   METIS: 'metis',
   JUPITERZ: 'jupiterz',

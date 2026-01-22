@@ -1,5 +1,4 @@
 import Decimal from 'decimal.js';
-import JSBI from 'jsbi';
 import { useMemo } from 'react';
 import { formatNumber } from 'src/misc/utils';
 import ExchangeRate from '../ExchangeRate';
@@ -22,9 +21,9 @@ const Index = ({
   containerClassName?: string;
 }) => {
   const rateParams = {
-    inAmount: quoteResponse?.quoteResponse.inAmount || JSBI.BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
+    inAmount: quoteResponse?.quoteResponse.inAmount || BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
     inputDecimal: fromTokenInfo.decimals,
-    outAmount: quoteResponse?.quoteResponse.outAmount || JSBI.BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
+    outAmount: quoteResponse?.quoteResponse.outAmount || BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
     outputDecimal: toTokenInfo.decimals,
   };
 
@@ -60,8 +59,8 @@ const Index = ({
     <div className={cn('mt-4 space-y-4 ', containerClassName)}>
       <div className="flex items-center justify-between text-xs">
         <div className="text-primary-text/50">{<span>Rate</span>}</div>
-        {JSBI.greaterThan(rateParams.inAmount, JSBI.BigInt(0)) &&
-        JSBI.greaterThan(rateParams.outAmount, JSBI.BigInt(0)) ? (
+        {rateParams.inAmount > BigInt(0) &&
+        rateParams.outAmount > BigInt(0) ? (
           <ExchangeRate
             loading={loading}
             rateParams={rateParams}

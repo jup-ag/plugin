@@ -1,6 +1,5 @@
 
 import Decimal from 'decimal.js';
-import JSBI from 'jsbi';
 import * as React from 'react';
 
 import { formatNumber, fromLamports } from '../misc/utils';
@@ -9,9 +8,9 @@ import { cn } from 'src/misc/cn';
 import { Asset } from 'src/entity/SearchResponse';
 
 export interface IRateParams {
-  inAmount: JSBI;
+  inAmount: bigint;
   inputDecimal: number;
-  outAmount: JSBI;
+  outAmount: bigint;
   outputDecimal: number;
 }
 

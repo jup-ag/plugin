@@ -1,5 +1,4 @@
 import Decimal from 'decimal.js';
-import JSBI from 'jsbi';
 import {
   Dispatch,
   MutableRefObject,
@@ -177,18 +176,18 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
 
   const amount = useMemo(() => {
     if (!fromTokenInfo || !toTokenInfo) {
-      return JSBI.BigInt(0);
+      return BigInt(0);
     }
     if (isToPairFocused.current === true) {
       if (!debouncedForm.toValue || !hasNumericValue(debouncedForm.toValue)) {
-        return JSBI.BigInt(0);
+        return BigInt(0);
       }
-      return JSBI.BigInt(new Decimal(debouncedForm.toValue).mul(Math.pow(10, toTokenInfo.decimals)).floor().toFixed());
+      return BigInt(new Decimal(debouncedForm.toValue).mul(Math.pow(10, toTokenInfo.decimals)).floor().toFixed());
     } else {
       if (!debouncedForm.fromValue || !hasNumericValue(debouncedForm.fromValue)) {
-        return JSBI.BigInt(0);
+        return BigInt(0);
       }
-      return JSBI.BigInt(
+      return BigInt(
         new Decimal(debouncedForm.fromValue).mul(Math.pow(10, fromTokenInfo.decimals)).floor().toFixed(),
       );
     }

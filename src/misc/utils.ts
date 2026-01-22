@@ -1,7 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import Decimal from 'decimal.js';
-import JSBI from 'jsbi';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { BalanceResponse } from 'src/data/UltraSwapService';
 import { Asset } from 'src/entity/SearchResponse';
@@ -45,21 +44,21 @@ export function shortenAddress(address: string, chars = 4): string {
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 }
 
-export function readableValue(lamportsAmount: JSBI | BN | number | bigint, decimals: number): string {
+export function readableValue(lamportsAmount: BN | number | bigint, decimals: number): string {
   return new Decimal(lamportsAmount.toString())
     .div(10 ** decimals)
     .toDP(decimals, Decimal.ROUND_DOWN)
     .toFixed();
 }
 
-export function fromLamports(lamportsAmount: JSBI | BN | number | bigint, decimals: number): number {
+export function fromLamports(lamportsAmount: BN | number | bigint, decimals: number): number {
   return new Decimal(lamportsAmount.toString())
     .div(10 ** decimals)
     .toDP(decimals, Decimal.ROUND_DOWN)
     .toNumber();
 }
 
-export function toLamports(lamportsAmount: JSBI | BN | number, decimals: number): number {
+export function toLamports(lamportsAmount: BN | number | bigint, decimals: number): number {
   return new Decimal(lamportsAmount.toString())
     .mul(10 ** decimals)
     .floor()

@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
-import JSBI from 'jsbi';
 import {
   array,
+  bigint,
   boolean,
   coerce,
   defaulted,
@@ -16,8 +16,7 @@ import {
 
 const PublicKeyFromString = coerce(instance(PublicKey), string(), (value) => new PublicKey(value));
 
-//@ts-ignore bug because JSBI ctor being private?!?
-const AmountFromString = coerce<JSBI, null, string>(instance(JSBI), string(), (value) => JSBI.BigInt(value));
+const AmountFromString = coerce<bigint, null, string>(bigint(), string(), (value) => BigInt(value));
 
 const NumberFromString = coerce<string, null, number>(string(), number(), (value) => Number(value));
 
