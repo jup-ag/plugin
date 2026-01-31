@@ -22,9 +22,9 @@ const Index = ({
 }) => {
   const rateParams = {
     inAmount: quoteResponse?.quoteResponse.inAmount || BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
-    inputDecimal: fromTokenInfo.decimals,
+    inputAsset: fromTokenInfo,
     outAmount: quoteResponse?.quoteResponse.outAmount || BigInt(0), // If there's no selectedRoute, we will use first route value to temporarily calculate
-    outputDecimal: toTokenInfo.decimals,
+    outputAsset: toTokenInfo,
   };
 
   const priceImpact = formatNumber.format(

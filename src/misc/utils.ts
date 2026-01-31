@@ -65,6 +65,70 @@ export function toLamports(lamportsAmount: BN | number | bigint, decimals: numbe
     .toNumber();
 }
 
+// Scaled UI amount utilities
+
+export type ScaledUiConfig = {
+  multiplier?: number | undefined;
+  newMultiplier?: number | undefined;
+  /** ISO date string */
+  newMultiplierEffectiveAt?: string | undefined;
+};
+
+type ScalableAsset = Pick<Asset, 'decimals' | 'scaledUiConfig'>;
+
+
+/**
+ * Get the effective multiplier for scaledUiConfig, considering newMultiplier effective date.
+ * Returns 1 if no config or multiplier is defined.
+ */
+export function getEffectiveMultiplier(config:  Asset ): number {
+  const {scaledUiConfig} = config
+  if (!scaledUiConfig) return 1;
+ 
+
+  if (scaledUiConfig.newMultiplier && scaledUiConfig.newMultiplierEffectiveAt) {
+    const effectiveDate = new Date(scaledUiConfig.newMultiplierEffectiveAt);
+    if (new Date() >= effectiveDate) {
+      return scaledUiConfig.newMultiplier;
+    }
+  }
+  return scaledUiConfig.multiplier ?? 1;
+}
+
+/**
+ * Parse a UI amount string to raw token units, accounting for scaledUiConfig multiplier.
+ *
+ * Formula: raw = uiAmount * 10^decimals / multiplier
+ * @example
+ * parseUiAmount('100', { decimals: 6, scaledUiConfig: { multiplier: 10 } }) // 10000000n
+ * parseUiAmount('100', { decimals: 6, scaledUiConfig: { multiplier: 0.1 } }) // 1000000000n
+ */
+export function parseUiAmount(value: string, asset: Asset): bigint | undefined {
+  if (!value || !hasNumericValue(value)) {
+    return undefined;
+  }
+  const multiplier = getEffectiveMultiplier(asset);
+  return BigInt(
+    new Decimal(value).div(multiplier).mul(Math.pow(10, asset.decimals)).floor().toFixed(),
+  );
+}
+
+/**
+ * Format raw token units to UI amount string, accounting for scaledUiConfig multiplier.
+ *
+ * Formula: uiAmount = raw / 10^decimals * multiplier
+ * @example
+ * formatUiAmount(10000000n, { decimals: 6, scaledUiConfig: { multiplier: 10 } }) // '100'
+ * formatUiAmount(1000000000n, { decimals: 6, scaledUiConfig: { multiplier: 0.1 } }) // '100'
+ */
+export function formatUiAmount(rawAmount: bigint | string | number, asset: Asset): string {
+  const multiplier = getEffectiveMultiplier(asset);
+  return new Decimal(rawAmount.toString())
+    .div(Math.pow(10, asset.decimals))
+    .mul(multiplier)
+    .toFixed();
+}
+
 export const isMobile = () => typeof window !== 'undefined' && screen && screen.width <= 480;
 
 export const detectedSeparator = formatNumber.format('1.1').substring(1, 2);
