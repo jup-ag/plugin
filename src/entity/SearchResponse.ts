@@ -72,6 +72,14 @@ export type Asset = {
   isVerified?: boolean | undefined;
   cexes?: string[] | undefined;
   tags?: string[] | undefined;
+  scaledUiConfig?:
+    | {
+        multiplier?: number | undefined;
+        newMultiplier?: number | undefined;
+        /** ISO date string */
+        newMultiplierEffectiveAt?: string | undefined;
+      }
+    | undefined;
 };
 
 export type SearchResponse = Asset[];

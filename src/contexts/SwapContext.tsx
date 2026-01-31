@@ -178,17 +178,36 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
     if (!fromTokenInfo || !toTokenInfo) {
       return BigInt(0);
     }
+
+    // Determine the effective multiplier for scaledUiConfig
+    const getEffectiveMultiplier = (token: Asset): number => {
+      const config = token.scaledUiConfig;
+      if (!config) return 1;
+
+      if (config.newMultiplier && config.newMultiplierEffectiveAt) {
+        const effectiveDate = new Date(config.newMultiplierEffectiveAt);
+        if (new Date() >= effectiveDate) {
+          return config.newMultiplier;
+        }
+      }
+      return config.multiplier ?? 1;
+    };
+
     if (isToPairFocused.current === true) {
       if (!debouncedForm.toValue || !hasNumericValue(debouncedForm.toValue)) {
         return BigInt(0);
       }
-      return BigInt(new Decimal(debouncedForm.toValue).mul(Math.pow(10, toTokenInfo.decimals)).floor().toFixed());
+      const toMultiplier = getEffectiveMultiplier(toTokenInfo);
+      return BigInt(
+        new Decimal(debouncedForm.toValue).div(toMultiplier).mul(Math.pow(10, toTokenInfo.decimals)).floor().toFixed(),
+      );
     } else {
       if (!debouncedForm.fromValue || !hasNumericValue(debouncedForm.fromValue)) {
         return BigInt(0);
       }
+      const fromMultiplier = getEffectiveMultiplier(fromTokenInfo);
       return BigInt(
-        new Decimal(debouncedForm.fromValue).mul(Math.pow(10, fromTokenInfo.decimals)).floor().toFixed(),
+        new Decimal(debouncedForm.fromValue).div(fromMultiplier).mul(Math.pow(10, fromTokenInfo.decimals)).floor().toFixed(),
       );
     }
   }, [debouncedForm.fromValue, debouncedForm.toValue, fromTokenInfo, toTokenInfo]);
