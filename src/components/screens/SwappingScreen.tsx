@@ -5,7 +5,7 @@ import { useSwapContext } from 'src/contexts/SwapContext';
 import JupButton from '../JupButton';
 import SuccessIcon from 'src/icons/SuccessIcon';
 import PriceInfo from '../PriceInfo/index';
-import { readableValue } from 'src/misc/utils';
+import { formatUiAmount, readableValue } from 'src/misc/utils';
 import { usePreferredExplorer } from 'src/contexts/preferredExplorer';
 
 const ErrorIcon = () => {
@@ -131,10 +131,10 @@ const SwappingScreen = () => {
         <div className="flex flex-col justify-center items-center gap-y-2">
           <div className="mt-2 flex flex-col items-center justify-center text-center px-4">
             <p className="text-xs font-semibold text-primary-text">
-              Swapped {readableValue(inputAmount, fromTokenInfo.decimals)} {fromTokenInfo.symbol} to
+              Swapped {formatUiAmount(inputAmount, fromTokenInfo)} {fromTokenInfo.symbol} to
             </p>
             <p className="text-2xl font-semibold text-primary-text">
-              {readableValue(outputAmount, toTokenInfo.decimals)} {toTokenInfo.symbol}
+              {formatUiAmount(outputAmount, toTokenInfo)} {toTokenInfo.symbol}
             </p>
           </div>
 

@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 import { WRAPPED_SOL_MINT } from 'src/constants';
-import { hasNumericValue, useDebounce } from 'src/misc/utils';
+import { formatUiAmount, parseUiAmount, useDebounce } from 'src/misc/utils';
 import { FormProps, IInit } from 'src/types';
 import { useScreenState } from './ScreenProvider';
 import { useWalletPassThrough } from './WalletPassthroughProvider';
@@ -179,36 +179,10 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
       return BigInt(0);
     }
 
-    // Determine the effective multiplier for scaledUiConfig
-    const getEffectiveMultiplier = (token: Asset): number => {
-      const config = token.scaledUiConfig;
-      if (!config) return 1;
-
-      if (config.newMultiplier && config.newMultiplierEffectiveAt) {
-        const effectiveDate = new Date(config.newMultiplierEffectiveAt);
-        if (new Date() >= effectiveDate) {
-          return config.newMultiplier;
-        }
-      }
-      return config.multiplier ?? 1;
-    };
-
     if (isToPairFocused.current === true) {
-      if (!debouncedForm.toValue || !hasNumericValue(debouncedForm.toValue)) {
-        return BigInt(0);
-      }
-      const toMultiplier = getEffectiveMultiplier(toTokenInfo);
-      return BigInt(
-        new Decimal(debouncedForm.toValue).div(toMultiplier).mul(Math.pow(10, toTokenInfo.decimals)).floor().toFixed(),
-      );
+      return parseUiAmount(debouncedForm.toValue, toTokenInfo) ?? BigInt(0);
     } else {
-      if (!debouncedForm.fromValue || !hasNumericValue(debouncedForm.fromValue)) {
-        return BigInt(0);
-      }
-      const fromMultiplier = getEffectiveMultiplier(fromTokenInfo);
-      return BigInt(
-        new Decimal(debouncedForm.fromValue).div(fromMultiplier).mul(Math.pow(10, fromTokenInfo.decimals)).floor().toFixed(),
-      );
+      return parseUiAmount(debouncedForm.fromValue, fromTokenInfo) ?? BigInt(0);
     }
   }, [debouncedForm.fromValue, debouncedForm.toValue, fromTokenInfo, toTokenInfo]);
 
@@ -301,11 +275,9 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
 
       const { outAmount, inAmount } = quoteResponseMeta?.quoteResponse || {};
       if (!isToPairFocused.current) {
-        newValue.toValue = outAmount ? new Decimal(outAmount.toString()).div(10 ** toTokenInfo.decimals).toFixed() : '';
+        newValue.toValue = outAmount ? formatUiAmount(outAmount, toTokenInfo) : '';
       } else {
-        newValue.fromValue = inAmount
-          ? new Decimal(inAmount.toString()).div(10 ** fromTokenInfo.decimals).toFixed()
-          : '';
+        newValue.fromValue = inAmount ? formatUiAmount(inAmount, fromTokenInfo) : '';
       }
       return newValue;
     });

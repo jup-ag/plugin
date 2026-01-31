@@ -2,24 +2,24 @@
 import Decimal from 'decimal.js';
 import * as React from 'react';
 
-import { formatNumber, fromLamports } from '../misc/utils';
+import { formatNumber, formatUiAmount } from '../misc/utils';
 import PrecisionTickSize from './PrecisionTickSize';
 import { cn } from 'src/misc/cn';
 import { Asset } from 'src/entity/SearchResponse';
 
 export interface IRateParams {
   inAmount: bigint;
-  inputDecimal: number;
+  inputAsset: Asset;
   outAmount: bigint;
-  outputDecimal: number;
+  outputAsset: Asset;
 }
 
 export const calculateRate = (
-  { inAmount, inputDecimal, outAmount, outputDecimal }: IRateParams,
+  { inAmount, inputAsset, outAmount, outputAsset }: IRateParams,
   reverse: boolean,
 ): Decimal => {
-  const input = fromLamports(inAmount, inputDecimal);
-  const output = fromLamports(outAmount, outputDecimal);
+  const input = new Decimal(formatUiAmount(inAmount, inputAsset));
+  const output = new Decimal(formatUiAmount(outAmount, outputAsset));
 
   const rate = !reverse ? new Decimal(input).div(output) : new Decimal(output).div(input);
 
