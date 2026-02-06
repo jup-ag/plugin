@@ -14,7 +14,11 @@ import { ShadowDomContainer } from './components/ShadowDomContainer';
 
 const containerId = 'jupiter-plugin-instance';
 const packageJson = require('../package.json');
-const bundleName = `plugin-${packageJson.version}`;
+
+// Use stable name in dev mode to avoid CDN version mismatch
+const bundleName = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV 
+  ? 'plugin-dev' 
+  : `plugin-${packageJson.version}`;
 
 const scriptDomain =
   (() => {

@@ -1,7 +1,31 @@
 # Developer Notes
 
-To develop, `pnpm i && pnpm dev`
-To build, `pnpm build-widget`
+## Quick Start
+
+```bash
+pnpm i
+pnpm dev
+```
+
+## Building
+
+```bash
+# Production build (versioned: plugin-1.0.x.js)
+pnpm build-widget
+
+# Dev build (stable name: plugin-dev.js) - for local testing
+NEXT_PUBLIC_IS_PLUGIN_DEV=true pnpm build-widget
+```
+
+## Dev Mode Bundle Loading
+
+When `NEXT_PUBLIC_IS_PLUGIN_DEV=true` is set (in `.env` or environment):
+- Webpack outputs to `plugin-dev.js` instead of `plugin-{version}.js`
+- The loader uses the local build instead of fetching from CDN
+- You can bump versions freely without breaking the homepage
+
+This solves the "version mismatch" issue where bumping package.json version 
+would cause the homepage to try loading files that don't exist on CDN yet.
 
 There's a few point of entry for Plugin, and each has specific reasons:
 
