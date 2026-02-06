@@ -137,8 +137,8 @@ const Form: React.FC<{
         setLastSwapResult,
       });
     } catch (error) {
-      console.log('Swap error', error);
-    } finally{
+      // Error handling is done via setLastSwapResult in ultraSwapMutation
+    } finally {
       setScreen('Swapping');
     }
   }, [wallet, quoteResponseMeta, ultraSwapMutation, fromTokenInfo, toTokenInfo, setTxStatus, setLastSwapResult,setScreen]);
