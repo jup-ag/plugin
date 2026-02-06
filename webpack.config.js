@@ -9,12 +9,8 @@ const packageJson = require("./package.json");
 
 const analyseBundle = process.env.ANALYSE === 'true';
 
-// Use stable bundle name in dev mode OR Vercel preview to avoid CDN version mismatch
-const isPluginDev = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV === 'true';
-const isVercelPreview = process.env.VERCEL_ENV === 'preview';
-const useDevBundle = isPluginDev || isVercelPreview;
-
-const bundleName = useDevBundle ? 'plugin-dev' : `plugin-${packageJson.version}`;
+// Always use versioned bundle name
+const bundleName = `plugin-${packageJson.version}`;
 
 if (!bundleName) {
   throw new Error('Bundle name/version is not set');

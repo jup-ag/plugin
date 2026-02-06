@@ -10,33 +10,29 @@ pnpm dev
 ## Building
 
 ```bash
-# Dev build (stable name: plugin-dev.js) - for local testing
-pnpm build-widget:dev
-
-# Production build (versioned: plugin-1.0.x.js) - for publishing
-pnpm build-widget
+pnpm build-widget    # Build versioned bundle (plugin-1.0.x.js) to /public/
 ```
 
-## Dev Mode Bundle Loading
+## Local Development
 
-When using `pnpm build-widget:dev`:
-- Webpack outputs to `plugin-dev.js` instead of `plugin-{version}.js`
-- The homepage loads the local build instead of fetching from CDN
-- You can bump versions freely without breaking the homepage
+The `.env` file has `NEXT_PUBLIC_IS_PLUGIN_DEV=true` which tells the app to 
+load bundles from local `/public/` instead of CDN.
 
-**Typical dev workflow:**
+**Workflow:**
 ```bash
-pnpm build-widget:dev   # Build once with stable name
-pnpm dev                # Start dev server - homepage works!
-# Make changes, bump version, rebuild - still works
+pnpm build-widget   # Build once (creates /public/plugin-1.0.x.js)
+pnpm dev            # Homepage loads from localhost, not CDN
+# Bump version, rebuild, still works - loads new version from /public/
 ```
 
-This solves the "version mismatch" issue where bumping package.json version 
-would cause the homepage to try loading files that don't exist on CDN yet.
+## Vercel Previews
 
-**Vercel previews:** Automatically detected via `VERCEL_ENV=preview`. 
-The `vercel.json` runs `build-widget:dev` before Next.js build, so PR previews 
-load the new code from the preview URL instead of CDN.
+Automatically handled:
+- `vercel.json` runs `build-widget` before Next.js build
+- `NEXT_PUBLIC_VERCEL_ENV=preview` is set automatically by Vercel
+- App detects preview mode and loads from preview URL instead of CDN
+
+**Result:** PR previews always test the new code, no CDN needed.
 
 There's a few point of entry for Plugin, and each has specific reasons:
 

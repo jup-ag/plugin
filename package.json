@@ -11,7 +11,6 @@
     "lint": "next lint",
     "format:fix": "prettier --write src",
     "build-widget": "NODE_ENV=production MODE=widget webpack",
-    "build-widget:dev": "NODE_ENV=production MODE=widget NEXT_PUBLIC_IS_PLUGIN_DEV=true webpack",
     "analyse": "NODE_ENV=production MODE=widget ANALYSE=true webpack"
   },
   "files": [
