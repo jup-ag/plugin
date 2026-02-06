@@ -15,10 +15,12 @@ import { ShadowDomContainer } from './components/ShadowDomContainer';
 const containerId = 'jupiter-plugin-instance';
 const packageJson = require('../package.json');
 
-// Use stable name in dev mode to avoid CDN version mismatch
-const bundleName = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV 
-  ? 'plugin-dev' 
-  : `plugin-${packageJson.version}`;
+// Use stable bundle name in dev mode OR Vercel preview to avoid CDN version mismatch
+const isPluginDev = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV === 'true';
+const isVercelPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
+const useDevBundle = isPluginDev || isVercelPreview;
+
+const bundleName = useDevBundle ? 'plugin-dev' : `plugin-${packageJson.version}`;
 
 const scriptDomain =
   (() => {

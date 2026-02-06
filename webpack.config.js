@@ -8,10 +8,13 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const packageJson = require("./package.json");
 
 const analyseBundle = process.env.ANALYSE === 'true';
-const isPluginDev = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV === 'true';
 
-// Use stable name in dev mode to avoid CDN version mismatch
-const bundleName = isPluginDev ? 'plugin-dev' : `plugin-${packageJson.version}`;
+// Use stable bundle name in dev mode OR Vercel preview to avoid CDN version mismatch
+const isPluginDev = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV === 'true';
+const isVercelPreview = process.env.VERCEL_ENV === 'preview';
+const useDevBundle = isPluginDev || isVercelPreview;
+
+const bundleName = useDevBundle ? 'plugin-dev' : `plugin-${packageJson.version}`;
 
 if (!bundleName) {
   throw new Error('Bundle name/version is not set');
