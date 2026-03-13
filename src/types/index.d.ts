@@ -46,7 +46,7 @@ export interface FormProps {
 }
 
 /** Built in support for these explorers */
-export type DEFAULT_EXPLORER = 'Solana Explorer' | 'Solscan' | 'Solana Beach' | 'SolanaFM';
+export type DEFAULT_EXPLORER = 'Solana Explorer' | 'Solscan' | 'Solana Beach' | 'SolanaFM' | 'OrbMarkets';
 
 export interface TransactionInstruction {
   accounts: {
