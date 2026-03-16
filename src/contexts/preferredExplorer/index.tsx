@@ -58,6 +58,16 @@ export const AVAILABLE_EXPLORER: {
         return `https://solana.fm/address/${mint}`;
       },
     },
+    {
+      name: 'OrbMarkets',
+      url: 'https://orbmarkets.io/',
+      get: (txid: string, cluster: Cluster = 'mainnet-beta') => {
+        return `https://orbmarkets.io/tx/${txid}`;
+      },
+      getToken: (mint: string, cluster: Cluster = 'mainnet-beta') => {
+        return `https://orbmarkets.io/token/${mint}`;
+      },
+    },
   ];
 
 export interface PreferredExplorer {
