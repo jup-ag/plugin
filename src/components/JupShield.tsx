@@ -55,13 +55,13 @@ const Warnings = ({
 const JupShield = ({ tokenAddress }: { tokenAddress: string }) => {
   const isMobile = useMobile();
   const { data, isFetching } = useQuery({
-    queryKey: ['shield', tokenAddress],
+    queryKey: ['datapi', 'shield', tokenAddress],
     queryFn: () => ultraSwapService.getShield([tokenAddress]),
     gcTime: 5 * 60_000,
     staleTime: 5 * 60_000,
     placeholderData: keepPreviousData,
     select: (data) => {
-      const warnings = data.warnings[tokenAddress];
+      const warnings = data.warnings[tokenAddress] ?? [];
       return {
         isNotVerified: warnings.find((warning) => warning.type === 'NOT_VERIFIED'),
         totalWarnings: warnings.length,
