@@ -95,25 +95,35 @@ export enum Severity {
   CRITICAL = 'critical',
 }
 
-export type Warning = {
+export type ShieldWarning = {
   type: string;
   message: string;
   severity: Severity;
+  source?: string | null;
 };
 
-export interface ShieldResponse {
+export type Warning = ShieldWarning;
+
+export type GetShieldRequest = {
+  mints: string[];
+};
+
+export interface GetShieldResponse {
   warnings: {
-    [mintAddress: string]: Warning[];
+    [mintAddress: string]: ShieldWarning[];
   };
 }
+export type ShieldResponse = GetShieldResponse;
+
 class UltraSwapService implements UltraSwapService {
-  private BASE_URL ='https://ultra-api.jup.ag';
+  private BASE_URL = 'https://ultra-api.jup.ag';
+  private DATAPI_BASE_URL = 'https://datapi.jup.ag';
   private ROUTE = {
     SWAP: `${this.BASE_URL}/execute`,
     ORDER: `${this.BASE_URL}/order`,
     ROUTERS: `${this.BASE_URL}/order/routers`,
     BALANCES: `${this.BASE_URL}/balances`,
-    SHIELD: `${this.BASE_URL}/shield`,
+    SHIELD: `${this.DATAPI_BASE_URL}/v1/shield`,
   };
 
   async getQuote(params: UltraSwapQuoteParams, signal?: AbortSignal): Promise<UltraQuoteResponse> {
@@ -170,8 +180,12 @@ class UltraSwapService implements UltraSwapService {
     const result = await response.json();
     return result;
   }
-  async getShield(mintAddress: string[]): Promise<ShieldResponse> {
-    const response = await fetch(`${this.ROUTE.SHIELD}?mints=${mintAddress.join(',')}`);
+  async getShield(mints: GetShieldRequest['mints'], signal?: AbortSignal): Promise<GetShieldResponse> {
+    const searchParams = new URLSearchParams({
+      mints: mints.join(','),
+      isJupiter: 'true',
+    });
+    const response = await fetch(`${this.ROUTE.SHIELD}?${searchParams.toString()}`, { signal });
     if (!response.ok) {
       throw response;
     }
