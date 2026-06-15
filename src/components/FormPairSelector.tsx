@@ -32,7 +32,7 @@ const FormPairSelector = ({ onSubmit, onClose }: IFormPairSelector) => {
   // empty query returns all blue chip tokens
   const { data: blueChipTokens = [] } = useSearch([]);
   const { data: searchTokens = [], isLoading } = useSearch([search], { staleTime: 5 * 60 * 1000 });
-  const { data: userBalanceTokens = [] } = useSearch([Object.keys(balances).join(',')]);
+  const { data: userBalanceTokens = [] } = useSearch(Object.keys(balances));
 
   const searchResult = useMemo(() => {
     // if no search, return user balance tokens and blue chip tokens
