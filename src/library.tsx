@@ -16,19 +16,13 @@ const containerId = 'jupiter-plugin-instance';
 const packageJson = require('../package.json');
 const bundleName = `plugin-${packageJson.version}`;
 
-const scriptDomain =
-  (() => {
-    if (!process.env.NEXT_PUBLIC_IS_PLUGIN_DEV) {
-         return null
-    }
-    if (typeof window === 'undefined' || typeof document === 'undefined') return '';
-    
-    const url = (document.currentScript as HTMLScriptElement)?.src;
-    if (url) {
-      return new URL(url).origin;
-    }
-    return null;
-  })() || 'https://plugin.jup.ag';
+// In dev/preview: load from local /public (empty string = relative path)
+// In production: load from CDN
+const isLocalDev = process.env.NEXT_PUBLIC_IS_PLUGIN_DEV === 'true';
+const isVercelPreview = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
+const useLocalBundle = isLocalDev || isVercelPreview;
+
+const scriptDomain = useLocalBundle ? '' : 'https://plugin.jup.ag';
 
 async function loadRemote(id: string, href: string, type: 'text/javascript' | 'stylesheet') {
   return new Promise((res, rej) => {
