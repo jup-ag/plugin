@@ -117,7 +117,7 @@ export type ShieldResponse = GetShieldResponse;
 
 class UltraSwapService implements UltraSwapService {
   private BASE_URL = 'https://ultra-api.jup.ag';
-  private DATAPI_BASE_URL = 'https://datapi.jup.ag';
+  private DATAPI_BASE_URL = 'https://api.jup.ag/_datapi';
   private ROUTE = {
     SWAP: `${this.BASE_URL}/execute`,
     ORDER: `${this.BASE_URL}/order`,

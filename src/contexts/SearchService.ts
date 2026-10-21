@@ -1,6 +1,6 @@
 import { SearchResponse } from 'src/entity/SearchResponse';
 
-const BASE_URL = 'https://datapi.jup.ag';
+const BASE_URL = 'https://api.jup.ag/_datapi';
 
 class SearchService {
   private ROUTE = {
