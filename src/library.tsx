@@ -61,6 +61,11 @@ async function loadJupiter() {
     return;
   }
 
+  // npm build registers the renderer locally, no need to fetch the CDN bundle
+  if ((window as any).JupiterRenderer?.RenderJupiter) {
+    return;
+  }
+
   try {
     // Load all the scripts
     await loadRemote('jupiter-load-script-app', `${scriptDomain}/${bundleName}-app.js`, 'text/javascript');
@@ -77,7 +82,7 @@ const defaultStyles: CSSProperties = {
 const RenderLoadableJupiter = (props: IInit) => {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    loadJupiter();
+    loadJupiter().catch(() => {});
 
     let intervalId: NodeJS.Timer;
     if (!loaded) {
