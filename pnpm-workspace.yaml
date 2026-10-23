@@ -1,0 +1,16 @@
+# pnpm >= 10 reads overrides and build-script permissions from here instead of package.json.
+overrides:
+  '@solana/web3.js': 1.87.6
+  '@solana/buffer-layout': 4.0.0
+
+# Native/postinstall scripts allowed to run on install. All have pure-JS fallbacks except esbuild (tsup).
+allowBuilds:
+  bigint-buffer: true
+  blake-hash: true
+  bufferutil: true
+  esbuild: true
+  keccak: true
+  protobufjs: true
+  tiny-secp256k1: true
+  usb: true
+  utf-8-validate: true

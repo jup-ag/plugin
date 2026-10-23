@@ -98,11 +98,5 @@
     "webpack": "^5.92.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^4.10.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@solana/web3.js": "1.87.6",
-      "@solana/buffer-layout": "4.0.0"
-    }
   }
 }
