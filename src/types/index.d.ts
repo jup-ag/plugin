@@ -80,9 +80,9 @@ export interface IInit {
       y?: number;
     };
   };
-  /** In case additional styling is needed for Plugin container */
+  /** Additional styling for the plugin container */
   containerStyles?: CSSProperties;
-  /** In case additional styling is needed for Plugin container */
+  /** Additional className for the plugin container */
   containerClassName?: string;
 
   /** When true, wallet connection are handled by your dApp, and use `syncProps()` to syncronise wallet state with Plugin */
