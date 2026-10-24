@@ -8,6 +8,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const packageJson = require("./package.json");
 
 const analyseBundle = process.env.ANALYSE === 'true';
+
+// Always use versioned bundle name
 const bundleName = `plugin-${packageJson.version}`;
 
 if (!bundleName) {

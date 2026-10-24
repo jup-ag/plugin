@@ -1,7 +1,38 @@
 # Developer Notes
 
-To develop, `pnpm i && pnpm dev`
-To build, `pnpm build-widget`
+## Quick Start
+
+```bash
+pnpm i
+pnpm dev
+```
+
+## Building
+
+```bash
+pnpm build-widget    # Build versioned bundle (plugin-1.0.x.js) to /public/
+```
+
+## Local Development
+
+The `.env` file has `NEXT_PUBLIC_IS_PLUGIN_DEV=true` which tells the app to 
+load bundles from local `/public/` instead of CDN.
+
+**Workflow:**
+```bash
+pnpm build-widget   # Build once (creates /public/plugin-1.0.x.js)
+pnpm dev            # Homepage loads from localhost, not CDN
+# Bump version, rebuild, still works - loads new version from /public/
+```
+
+## Vercel Previews
+
+Automatically handled:
+- `vercel.json` runs `build-widget` before Next.js build
+- `NEXT_PUBLIC_VERCEL_ENV=preview` is set automatically by Vercel
+- App detects preview mode and loads from preview URL instead of CDN
+
+**Result:** PR previews always test the new code, no CDN needed.
 
 There's a few point of entry for Plugin, and each has specific reasons:
 
