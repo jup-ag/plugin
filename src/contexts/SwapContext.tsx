@@ -206,6 +206,7 @@ export const SwapContextProvider = (props: PropsWithChildren<IInit>) => {
       referralAccount: formProps.referralAccount,
       referralFee: formProps.referralFee,
       excludeDexes: formProps.excludeDexes,
+      excludeRouters: formProps.excludeRouters,
     },
     // Stop refetching when transaction is in progress
     !txStatus,

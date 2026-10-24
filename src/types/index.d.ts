@@ -40,8 +40,14 @@ export interface FormProps {
   /** Referral fee to use for the swap */
   referralFee?: number;
 
-  /** Exclude DEXes */
+  /** Exclude DEXes from routing */
   excludeDexes?: string[];
+  /** 
+   * Exclude specific routers (e.g., 'okx', 'dflow', 'hashflow', 'jupiterz').
+   * If not provided but excludeDexes is set, defaults to excluding third-party aggregators
+   * that may not respect DEX exclusions.
+   */
+  excludeRouters?: string[];
 
 }
 

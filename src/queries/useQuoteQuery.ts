@@ -1,7 +1,13 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { UltraSwapQuoteParams, ultraSwapService } from 'src/data/UltraSwapService';
 import { FormattedUltraQuoteResponse } from 'src/entity/FormattedUltraQuoteResponse';
 import { create } from 'superstruct';
+
+/**
+ * Default routers to exclude when excludeDexes is specified.
+ * These are third-party aggregators that may not respect DEX exclusions.
+ */
+const DEFAULT_EXCLUDED_ROUTERS = ['okx', 'dflow', 'hashflow', 'jupiterz'];
 
 export const useQuoteQuery = (initialParams: UltraSwapQuoteParams, shouldRefetch: boolean = true) => {
   const { amount } = initialParams;
@@ -12,17 +18,19 @@ export const useQuoteQuery = (initialParams: UltraSwapQuoteParams, shouldRefetch
         return null;
       }
       try {
-        let params =initialParams;
-        if (params.excludeDexes && params.excludeDexes.length > 0) {
-          params ={
+        let params = initialParams;
+
+        // If excludeDexes is specified, also exclude routers that may bypass DEX exclusions
+        // Users can override this by explicitly providing excludeRouters
+        if (params.excludeDexes && params.excludeDexes.length > 0 && !params.excludeRouters) {
+          params = {
             ...initialParams,
-            excludeRouters:[
-              'okx','dflow','hashflow','jupiterz'
-            ]
-          }
+            excludeRouters: DEFAULT_EXCLUDED_ROUTERS,
+          };
         }
+
         const response = await ultraSwapService.getQuote(params, signal);
-        const quoteResponse = create(response, FormattedUltraQuoteResponse, 'conver FormattedUltraQuoteResponse Error');
+        const quoteResponse = create(response, FormattedUltraQuoteResponse, 'convert FormattedUltraQuoteResponse Error');
         return {
           quoteResponse,
           original: response,
