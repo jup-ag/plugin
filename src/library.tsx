@@ -13,8 +13,8 @@ import { cn } from './misc/cn';
 import { ShadowDomContainer } from './components/ShadowDomContainer';
 
 const containerId = 'jupiter-plugin-instance';
-const packageJson = require('../package.json');
-const bundleName = `plugin-${packageJson.version}`;
+// Keep the property access static so bundlers only include the version.
+const bundleName = `plugin-${require('../package.json').version}`;
 
 const scriptDomain =
   (() => {

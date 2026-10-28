@@ -1,4 +1,8 @@
 # pnpm >= 10 reads overrides and build-script permissions from here instead of package.json.
+# Release scripts perform their own frozen install; pnpm's automatic pre-run
+# install could otherwise update the lockfile before the script validates it.
+verifyDepsBeforeRun: false
+
 overrides:
   '@solana/web3.js': 1.87.6
   '@solana/buffer-layout': 4.0.0

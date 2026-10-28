@@ -1,6 +1,6 @@
 {
   "name": "@jup-ag/plugin",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "packageManager": "pnpm@11.2.2",
   "private": false,
   "license": "MIT",
@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "format:fix": "prettier --write src",
-    "build-widget": "NODE_ENV=production MODE=widget webpack",
+    "build-widget": "node scripts/build-widget.cjs",
+    "check-widget": "node scripts/build-widget.cjs --check",
     "analyse": "NODE_ENV=production MODE=widget ANALYSE=true webpack"
   },
   "files": [
