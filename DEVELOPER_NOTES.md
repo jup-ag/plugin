@@ -1,7 +1,10 @@
 # Developer Notes
 
-To develop, `pnpm i && pnpm dev`
-To build, `pnpm build-widget`
+Use the Node version in `.node-version` and the pnpm version in `package.json#packageManager`.
+
+To develop, `pnpm install --frozen-lockfile && pnpm dev`.
+To build release assets and update `plugin-v1.js`, run `pnpm build-widget`.
+To check that the widget assets match the current sources and lockfile, run `pnpm check-widget`.
 
 There's a few point of entry for Plugin, and each has specific reasons:
 
